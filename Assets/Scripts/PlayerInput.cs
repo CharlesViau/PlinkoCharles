@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class PlayerInput : MonoBehaviour
 {
     private bool isFalling = false;
+    private const float BALL_RIGHT_BOUNDS = -4.85f;
+    private const float BALL_LEFT_BOUNDS = 4.85f;
     private Rigidbody rb;
     [Range(0,5)] public float Speed = 5;
 
@@ -13,20 +15,20 @@ public class PlayerInput : MonoBehaviour
     private void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody>();
+        transform.position = new Vector3(0, 10, -5);
     }
-    void Start()
-    {
-     
-    }
-
+    
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("r"))
+        if(IsOutOfBounds())
+        {
+            transform.position = (transform.position.x > BALL_LEFT_BOUNDS) ? new Vector3(BALL_LEFT_BOUNDS, transform.position.y, transform.position.z) : new Vector3(BALL_RIGHT_BOUNDS, transform.position.y, transform.position.z);
+        }
+        if(Input.GetKeyDown("r"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
-
         if (!isFalling)
         {
             if (Input.GetKey("a") || Input.GetKey(KeyCode.LeftArrow))
@@ -45,4 +47,9 @@ public class PlayerInput : MonoBehaviour
             }
         }
     }
+    private bool IsOutOfBounds()
+    {
+        return transform.position.x > BALL_LEFT_BOUNDS || transform.position.x < BALL_RIGHT_BOUNDS;
+    }
 }
+
